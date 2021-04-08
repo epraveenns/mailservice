@@ -4,7 +4,6 @@ import com.praveen.mailservice.model.Mail;
 import com.praveen.mailservice.repository.MailLoggerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -48,13 +47,7 @@ public class MailSenderService {
         message.setFrom(mail.getSender());
         message.setSubject(mail.getSubject());
         message.setText(mail.getBody());
-        try {
-//            javaMailSender.send(message);         //can be uncommented if we have smtp server configured
-        }
-        catch (MailException e) {
-            log.error("Exception occurred. This operation might be retried", e);
-            throw e;
-        }
+//      javaMailSender.send(message);         //can be uncommented if we have smtp server configured
     }
 
     private void sendEmailWithAttachment(Mail mail, File file) throws Exception {

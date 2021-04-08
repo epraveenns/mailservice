@@ -35,6 +35,6 @@ class MailControllerTest {
                 post("/api/v1/mail")
                 .content(new ObjectMapper().writeValueAsString(new Mail()))
                 .contentType(MediaType.APPLICATION_JSON))
-               .andExpect(status().is(202));
+               .andExpect(status().is(200));
     }
 }

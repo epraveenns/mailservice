@@ -29,9 +29,9 @@ import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.OK;
 
 @SpringBootTest(classes = MailserviceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EmbeddedKafka
@@ -70,7 +70,7 @@ public class MailIntegrationTest {
         mailDto.setSubject("Subject");
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(MAIL_URI, mailDto, String.class);
-        assertEquals(ACCEPTED.value(), responseEntity.getStatusCode().value());
+        assertEquals(OK.value(), responseEntity.getStatusCode().value());
         mailConsumer.latch.await();
         assertEquals(0, mailConsumer.latch.getCount());
 
@@ -94,7 +94,7 @@ public class MailIntegrationTest {
         mailDto.setAttachmentUrl("https://www.cdc.gov/healthypets/images/pets/cute-dog-headshot.jpg");
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(MAIL_URI, mailDto, String.class);
-        assertEquals(ACCEPTED.value(), responseEntity.getStatusCode().value());
+        assertEquals(OK.value(), responseEntity.getStatusCode().value());
         mailConsumer.latch.await();
         assertEquals(0, mailConsumer.latch.getCount());
 

@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/mail")
@@ -36,8 +37,7 @@ public class MailController {
                     @ApiResponse(message = "Accepted", code = 202),
             }
     )
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public String sendEmail(@RequestBody MailDto mailDto) throws IOException {
+    public String sendEmail(@RequestBody @Valid MailDto mailDto) throws IOException {
         log.info("Received a request for delivering email {}", mailDto);
         mailProducerService.sendEmail(modelMapper.map(mailDto, Mail.class), mailDto.getAttachmentUrl());
         return "Request Accepted. Your email has been queued for delivery";
