@@ -1,7 +1,10 @@
 package com.praveen.mailservice.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.praveen.mailservice.MailserviceApplication;
 import com.praveen.mailservice.consumer.MailConsumer;
+import com.praveen.mailservice.model.ErrorModel;
 import com.praveen.mailservice.model.Mail;
 import com.praveen.mailservice.payload.MailDto;
 import com.praveen.mailservice.repository.MailLoggerRepository;
@@ -30,8 +33,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(classes = MailserviceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EmbeddedKafka
@@ -105,5 +107,26 @@ public class MailIntegrationTest {
         assertEquals(1, list.size());
 
         assertTrue(Files.exists(Path.of("filestore/cute-dog-headshot.jpg")));
+    }
+
+    @Test
+    public void testSendingMailWithInvalidAttachmentURL() throws JsonProcessingException {
+        MimeMessage mimeMessage = new MimeMessage((Session)null);
+        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        MailDto mailDto = new MailDto();
+        mailDto.setSender("asf@example.com");
+        mailDto.setRecipient("asdaf@example.com");
+        mailDto.setBody("Body");
+        mailDto.setSubject("Subject");
+        mailDto.setAttachmentUrl("hts://ddd.cdc.gov/healthypets/images/pets/cute-dog-headshot.jpg");
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(MAIL_URI, mailDto, String.class);
+        assertEquals(BAD_REQUEST.value(), responseEntity.getStatusCode().value());
+
+        ObjectMapper om = new ObjectMapper();
+        ErrorModel error = om.readValue(responseEntity.getBody(), ErrorModel.class);
+        assertEquals("Error during file download", error.getStatus());
+        assertEquals("unknown protocol: hts", error.getError());
     }
 }
