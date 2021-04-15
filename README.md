@@ -1,8 +1,8 @@
-#Mail Service
+# Mail Service
 
 This project is a micro service for asynchronous sending of emails
 
-###Technologies Used
+### Technologies Used
 * Java 11
 * Spring Boot 2
 * Spring Data JPA
@@ -17,16 +17,16 @@ This project is a micro service for asynchronous sending of emails
 * Embedded kafka for kafka integration testing
 * Spring mail for sending email
 
-###Features at a Glance
+### Features at a Glance
 * Asynchronous mail sender
 * Kafka and Zookeeper based queueing of emails
 * REST API based service
 
-###Configurations
+### Configurations
 * Kafka server can be configured in [properties](src/main/resources/application.properties)
 * MySQL credentials can also be configured in [properties](src/main/resources/application.properties)
 
-###Assumptions
+### Assumptions
 * Application has been designed with an assumption that SMTP server will be provided. The configuration of this server shall be done in [properties](src/main/resources/application.properties). For demo, the code for invoking the mail server has been commented out in MailSenderService.java
 * The attachment given by the user will be first downloaded. If the file is not available, the user will be notified immediately. Also, the file will be saved in the application storage layer so that while asynchronously sending the mail, we need not care if the actual file is deleted by the user
 * Attachment storage layer is code to an interface. As of now, the file will be stored in the application server itself. It can be easily stored in S3 for production use by implementing the interface for production profile.
