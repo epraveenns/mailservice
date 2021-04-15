@@ -60,3 +60,4 @@ This project is a micro service for asynchronous sending of emails
 * Swagger API Docs can be accessed by opening http://localhost:8080/swagger-ui/# . This requires the application to be in running state.
 
 ## Architecture
+![Architecture](diagrams/Architecture.png)
